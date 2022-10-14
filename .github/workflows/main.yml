@@ -1,23 +1,27 @@
-name: deploy to lambda
+name: lambda-depl
+
 on:
-  # Trigger the workflow on push or pull request,
-  # but only for the main branch
   push:
     branches:
-      - main
-jobs:
+      - master
 
+jobs:
   deploy_source:
-    name: deploy lambda from source
+    name: build and deploy lambda
+    strategy:
+      matrix:
+        node-version: [12.x]
     runs-on: ubuntu-latest
     steps:
-      - name: checkout source code
-        uses: actions/checkout@v1
-      - name: default deploy
+      - uses: actions/checkout@v2
+      - name: deploy zip to aws lambda
         uses: Mahesh414/python@master
         with:
           aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws_region: ap-south-1
+          aws_region: ${{ secrets.AWS_REGION }}
+        - name: zip Lambda Function
+          run: |
+            zip -r9 lambda.zip lambdaFunction.py
           function_name: lamda
-          source: function.py
+          zip_file: lambda.zip
