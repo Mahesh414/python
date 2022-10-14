@@ -1,23 +1,29 @@
-name: deploy to lambda
+name: Deploy Lambda Function
 on:
-  # Trigger the workflow on push or pull request,
-  # but only for the main branch
   push:
-    branches:
-      - main
-jobs:
+    branches: [ master]
+  pull_request:
+    branches: [ master ]
+  workflow_dispatch:
 
-  deploy_source:
-    name: deploy lambda from source
-    runs-on: ubuntu-latest
+jobs:
+  release:
+    name: Deploy lambda function
+    runs-on: [ ubuntu-latest]
     steps:
-      - name: checkout source code
-        uses: actions/checkout@v1
-      - name: default deploy
-        uses: appleboy/lambda-action@master
-        with:
-          aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws_region: ${{ secrets.AWS_REGION }}
-          function_name: lambda
-          source: function.py
+      - uses: actions/checkout@v2
+      - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ap-south-1
+        role-duration-seconds: 1200
+        role-session-name: MySessionName
+      - name: zip Lambda Function
+        run: |
+          zip -r9 lambda.zip function.py
+      - name: AWS Deploy
+        run: |
+          aws lambda update-function-code --function-name lamda --zip-file fileb://lambda.zip
+
