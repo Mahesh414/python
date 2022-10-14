@@ -2,7 +2,7 @@ name: Python application
 on:
   push:
     branches:
-      - main
+      - master
 jobs:
   deploy-lambda:
     runs-on: ubuntu-latest
