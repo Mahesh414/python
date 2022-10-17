@@ -15,12 +15,9 @@ jobs:
           aws-access-key-id: ${{ secrets.ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
-          function_name: lamda
-          source: function.py
-  #    - name: zip Lambda Function
-  #      run: |
-  #        zip -r9 lambda.zip function.py
-  #    - name: AWS Deploy
-  #      run: |
-  #        aws lambda invoke --function-name lamda --zip-file fileb://lambda.zip
-          #aws lambda update-function-code --function-name lamda --zip-file fileb://lambda.zip
+      - name: zip Lambda Function
+        run: |
+          zip -r9 lambda.zip function.py
+      - name: AWS Deploy
+        run: |
+          aws lambda update-function-code --function-name lamda --zip-file fileb://lambda.zip
