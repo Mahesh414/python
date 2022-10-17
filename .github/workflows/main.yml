@@ -17,7 +17,7 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
       - name: zip Lambda Function
         run: |
-          zip -r9 lambda.zip function.py
+          zip -r9 lamda.zip function.py
       - name: AWS Deploy
         run: |
-          aws lambda update-function-code --function-name lamda --zip-file fileb://lamda.zip
+          aws lambda update-function-code --function-name lamda --zip-file fileb://lambda.zip
