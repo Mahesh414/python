@@ -4,7 +4,7 @@ on:
     branches:
       - master
     paths:
-      - sample
+      - sample/**
 jobs:
   deploy-lambda:
     runs-on: ubuntu-latest
