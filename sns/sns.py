@@ -31,6 +31,6 @@ Subject: %s
     except Exception as exception:
         print("Error: %s!\n\n" % exception)
 # =============================================================================
-# END OF SEND EMAIL FUNCTION
+# END OF SEND EMAIL FUNCTION.
 # =============================================================================
 send_email()
