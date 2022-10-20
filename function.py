@@ -1,4 +1,4 @@
-# function.py:
+# function.py
 import json
 import psycopg2
 import psycopg2.extras
