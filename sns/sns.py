@@ -6,10 +6,10 @@ import smtplib
 # =============================================================================
 def send_email():
     # Change the items with: ######Change Me#######
-    gmail_user = '######Change Me#######'
-    gmail_app_password = "######Change Me#######"
+    gmail_user = 'chennamahesh.inbox@gmail.com'
+    gmail_app_password = "Chenna@1009S"
     sent_from = gmail_user
-    sent_to = ['######Change Me#######', '######Change Me#######']
+    sent_to = ['chennamahesh.inbox@gmail.com', '######Change Me#######']
     sent_subject = "Hello World"
     sent_body = "Its me World"
 
@@ -21,7 +21,7 @@ Subject: %s
 """ % (sent_from, ", ".join(sent_to), sent_subject, sent_body)
 
     try:
-        server = smtplib.SMTP_SSL('######Change Me#######', 465)
+        server = smtplib.SMTP_SSL('gmail.com', 465)
         server.ehlo()
         server.login(gmail_user, gmail_app_password)
         server.sendmail(sent_from, sent_to, email_text.encode("utf-8"))
