@@ -2,7 +2,7 @@ name: Python application
 on:
   push:
     branches:
-      - dev
+      - master
 jobs:
   deploy-lambda:
     runs-on: ubuntu-latest
@@ -17,7 +17,7 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
       - name: zip Lambda Function
         run: |
-          zip -r9 sample.zip email.py
+          zip -r9 sample.zip sns.py
       - name: AWS Deploy
         run: |
-          aws lambda update-function-code --function-name lamda --zip-file fileb://sample.zip
+          aws lambda update-function-code --function-name sample --zip-file fileb://sample.zip
