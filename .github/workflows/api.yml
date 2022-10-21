@@ -1,0 +1,49 @@
+name: Send to AWS (dev)
+
+# This action runs when we push to dev
+on:
+  push:
+    branches:
+    - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    # This step configures the AWS credentials used by claudia
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        # Replace this with the region you want to deploy to
+        aws-region: us-east-1
+    # This step converts the variables you defined as GitHub secrets to a JSON
+    # This JSON will later be loaded by claudia and passed onto the API
+    - name: Create environment JSON
+      id: create-env
+      uses: schdck/create-env-json@v1
+      with:
+        file-name: "./env.dev.json"
+        # Declare here the variables you want to be passed to your API
+        STAGE: "DEV"
+        JWT_KEY: ${{ secrets.JWT_SECRET_DEV }}
+        MONGO_URL: $\{{ secrets.MONGO_URL_DEV }}
+    # This step will install claudia globally and build/test your code
+    - name: Use Node.js 12.x
+      uses: actions/setup-node@v1
+      with:
+        node-version: '12.x'
+    - name: npm install, build, and test
+      run: |
+        npm install
+        npm install -g claudia
+        npm run build --if-present
+        npm test
+      env:
+        CI: true
+    # This step will actually deploy your files to API Gateway
+    - name: Send files to AWS
+      run: claudia set-version --version dev --config api-config.json --set-env-from-json $
