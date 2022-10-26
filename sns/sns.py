@@ -2,7 +2,7 @@ import json
 import smtplib
 
 # =============================================================================
-# SEND EMAIL FUNCTION.
+# SEND EMAIL FUNCTION
 # =============================================================================
 def send_email():
     # Change the items with: ######Change Me#######
