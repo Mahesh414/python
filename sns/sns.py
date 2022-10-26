@@ -1,8 +1,6 @@
 import json
 import smtplib
 
-
-
 def lambda_handler(event, context):
     # TODO implement
     send_email()
