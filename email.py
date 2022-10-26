@@ -1,36 +1,33 @@
-import json
-import smtplib
+name: Deploy #Name of the Workflow
 
-# =============================================================================
-# SEND EMAIL FUNCTION
-# =============================================================================
-def send_email():
-    # Change the items with: ######Change Me#######
-    gmail_user = '######Change Me#######'
-    gmail_app_password = "######Change Me#######"
-    sent_from = gmail_user
-    sent_to = ['######Change Me#######', '######Change Me#######']
-    sent_subject = "Hello World"
-    sent_body = "Its me World"
+on:  #Name of the GitHub event that triggers the workflow
+  push:   #On Push Event We need to take action
+    branches:  #Now we need to specify the branch name
+    - master   
 
-    email_text = """\
-From: %s
-To: %s
-Subject: %s
-%s
-""" % (sent_from, ", ".join(sent_to), sent_subject, sent_body)
-
-    try:
-        server = smtplib.SMTP_SSL('######Change Me#######', 465)
-        server.ehlo()
-        server.login(gmail_user, gmail_app_password)
-        server.sendmail(sent_from, sent_to, email_text.encode("utf-8"))
-        server.close()
-        print(email_text)
-        print('Email sent!')
-    except Exception as exception:
-        print("Error: %s!\n\n" % exception)
-# =============================================================================
-# END OF SEND EMAIL FUNCTION
-# =============================================================================
-send_email()
+jobs:  #Workflow run is made up of one or more jobs
+  deploy_lambda:
+    runs-on: ubuntu-latest  #Through which Server OS we need to Work (type of machine to run the job on)
+    steps:
+    #Using versioned actions 
+      - uses: actions/checkout@v2  # --> Reference a specific version
+      - uses: actions/setup-node@v2 # --> To Setup the Server With Node Env
+        with:  
+          node-version: '14' #--> Specify the Version of the Node 
+      - name: Configure AWS Credentials  
+        uses: aws-actions/configure-aws-credentials@v1 #--> Setup the Credential for the AWS cli
+        with:
+        # Created the Secrets Under the Repo only with These Variables
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }} 
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1 #--> Define Region of the AWS-CLI 
+      - name: npm install
+        env:
+          CI: true
+        run: |
+          npm ci 
+      - name: deploy
+        run: |
+          zip -j deploy.zip ./* #--> Zip the Code As we know lambda function accept the zip file.
+          aws lambda update-function-code --function-name=test --zip-file=fileb://deploy.zip 
+# At last the AWS CLI command to Update the Zip file with existing One (With Correct Function Name)
