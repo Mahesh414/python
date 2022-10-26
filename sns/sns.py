@@ -12,7 +12,7 @@ def lambda_handler(event, context):
 
 
 # =============================================================================
-# SEND EMAIL FUNCTION
+# SEND EMAIL FUNCTION.
 # =============================================================================
 def send_email():
     # Change the items with: ######Change Me#######
