@@ -56,6 +56,11 @@ jobs:
         python -m pip install --upgrade pip
         if [ -f requirements-dev.txt ]; then pip install -r requirements-dev.txt; fi
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+    - name: Docker install
+      run: |
+        sudo apt update -y
+        sudo apt install docker.io -y
+        sudo docker pull ubuntu
     - name: Test application
       run: |
         FLASK_ENV=${{secrets.FLASK_ENV}} python main.py &
